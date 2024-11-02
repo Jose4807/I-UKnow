@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["email"] = $email;
             echo "BIENVENID@!!!";
             // Espera un segundo antes de redirigir
-            echo '<meta http-equiv="refresh" content="1;url=/I-UKnow/index.html">';
+            echo '<meta http-equiv="refresh" content="1;url=/I-UKnow/foro.php">';
             exit();
         } else {
             // Contraseña incorrecta
