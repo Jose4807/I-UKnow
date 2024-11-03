@@ -1,6 +1,6 @@
 <?php
-include 'PHP/config.php';
-session_start();
+include 'PHP/config.php'; // Incluye el archivo de configuración
+session_start(); // Inicia la sesión
 ?>
 
 <!DOCTYPE html>
@@ -15,70 +15,130 @@ session_start();
     <!-- Barra de navegación -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
         <div class="container">
-        <a class="navbar-brand" href="#">Foro</a>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="#">Inicio</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Categorías</a>
-            </li>
-            <li class="nav-item">
-                <?php if(isset($_SESSION["id_usuario"])): ?>
-                    <a class="nav-link" href="PHP/logout.php">Cerrar sesión</a>
-                <?php else: ?>
-                    <a class="nav-link" href="login.html">Iniciar sesión</a>
-                <?php endif; ?>
-            </li>
-            </ul>
-        </div>
+            <a class="navbar-brand" href="#">Foro</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Categorías</a>
+                    </li>
+                    <li class="nav-item">
+                        <?php if (isset($_SESSION["id_usuario"])): ?>
+                            <a class="nav-link" href="PHP/logout.php">Cerrar sesión</a>
+                        <?php else: ?>
+                            <a class="nav-link" href="login.html">Iniciar sesión</a>
+                        <?php endif; ?>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
     <div class="container">
         <div class="row">
-        <div class="col-lg-8">
-            <?php if(isset($_SESSION["id_usuario"])): ?>
-                <div class="mb-4">
-                    <form action="PHP/nuevaPublicacion.php" method="POST">
-                        <div class="mb-3">
-                            <input type="text" name="titulo" class="form-control" placeholder="Título de la publicación" required>
-                        </div>
-                        <div class="mb-3">
-                            <textarea name="contenido" class="form-control" rows="3" placeholder="Contenido de la publicación" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Crear publicación</button>
-                    </form>
-                </div>
-            <?php else: ?>
-                <p class="text-center">Inicia sesión para crear una publicación.</p>
-            <?php endif; ?>
+            <div class="col-lg-8">
+                <?php if (isset($_SESSION["id_usuario"])): ?>
+                    <div class="mb-4">
+                        <form action="PHP/nuevaPublicacion.php" method="POST">
+                            <div class="mb-3">
+                                <input type="text" name="titulo" class="form-control" placeholder="Título de la publicación" required>
+                            </div>
+                            <div class="mb-3">
+                                <textarea name="contenido" class="form-control" rows="3" placeholder="Contenido de la publicación" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Crear publicación</button>
+                        </form>
+                    </div>
+                <?php else: ?>
+                    <p class="text-center">Inicia sesión para crear una publicación.</p>
+                <?php endif; ?>
 
-            <?php
-            // Obtener todas las publicaciones
-            $sql = "SELECT p.titulo, p.contenido, p.fecha_creacion, u.nombre_usuario FROM Publicaciones p JOIN Usuarios u ON p.id_usuario = u.id_usuario ORDER BY p.fecha_creacion DESC";
-            $result = $conn->query($sql);
+                <?php
+                // Obtener todas las publicaciones
+                $sql = "SELECT p.id_publicacion, p.titulo, p.contenido, p.fecha_creacion, p.fecha_actualizacion, p.id_usuario, u.nombre_usuario 
+                        FROM Publicaciones p 
+                        JOIN Usuarios u ON p.id_usuario = u.id_usuario 
+                        ORDER BY p.fecha_creacion DESC";
+                $result = $conn->query($sql);
 
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-                    echo '<div class="card mb-3">';
-                    echo '<div class="card-body">';
-                    echo '<h5 class="card-title">' . htmlspecialchars($row["titulo"]) . '</h5>';
-                    echo '<p class="card-text">' . htmlspecialchars($row["contenido"]) . '</p>';
-                    echo '<div class="d-flex justify-content-between">';
-                    echo '<small>Publicado por <strong>' . htmlspecialchars($row["nombre_usuario"]) . '</strong> en ' . $row["fecha_creacion"] . '</small>';
-                    echo '<a href="#" class="btn btn-link">Comentarios</a>';
-                    echo '</div>';
-                    echo '</div>';
-                    echo '</div>';
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        echo '<div class="card mb-3">';
+                        echo '<div class="card-body">';
+                        echo '<h5 class="card-title">' . htmlspecialchars($row["titulo"]) . '</h5>';
+                        echo '<p class="card-text">' . htmlspecialchars($row["contenido"]) . '</p>';
+                        echo '<div class="d-flex justify-content-between">';
+                        echo '<small>Publicado por <strong>' . htmlspecialchars($row["nombre_usuario"]) . '</strong> en ' . $row["fecha_creacion"];
+
+                        // Mostrar "editado" si se ha actualizado
+                        if ($row["fecha_creacion"] != $row["fecha_actualizacion"]) {
+                            echo ' (editado el ' . $row["fecha_actualizacion"] . ')';
+                        }
+                        echo '</small>';
+
+                        // Mostrar botones de edición y borrado si el usuario es el dueño de la publicación
+                        if ($row['id_usuario'] == $_SESSION['id_usuario']) {
+                            echo '<button class="btn btn-warning btn-sm" onclick="editarPublicacion(\'' . $row['id_publicacion'] . '\', \'' . htmlspecialchars($row['titulo']) . '\', \'' . htmlspecialchars($row['contenido']) . '\')">Editar</button>';
+                            echo '<button class="btn btn-danger btn-sm ms-2" onclick="borrarPublicacion(\'' . $row['id_publicacion'] . '\')">Borrar</button>';
+                        }
+
+                        echo '</div></div></div>';
+                    }
+                } else {
+                    echo "<p>No hay publicaciones aún.</p>";
                 }
-            } else {
-                echo "<p>No hay publicaciones aún.</p>";
-            }
-            ?>
+                ?>
+            </div>
         </div>
     </div>
+
+    <!-- Modal para editar la publicación -->
+    <div class="modal fade" id="modalEditarPublicacion" tabindex="-1" aria-labelledby="modalEditarPublicacionLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="PHP/editarPublicacion.php" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEditarPublicacionLabel">Editar Publicación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id_publicacion" id="editarIdPublicacion">
+                        <div class="mb-3">
+                            <label for="editarTitulo" class="form-label">Título</label>
+                            <input type="text" name="titulo" id="editarTitulo" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editarContenido" class="form-label">Contenido</label>
+                            <textarea name="contenido" id="editarContenido" class="form-control" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript para abrir el modal de edición y borrar publicación -->
+    <script>
+    function editarPublicacion(id, titulo, contenido) {
+        document.getElementById('editarIdPublicacion').value = id;
+        document.getElementById('editarTitulo').value = titulo;
+        document.getElementById('editarContenido').value = contenido;
+        var editarModal = new bootstrap.Modal(document.getElementById('modalEditarPublicacion'));
+        editarModal.show();
+    }
+
+    function borrarPublicacion(id) {
+        if (confirm("¿Estás seguro de que deseas borrar esta publicación?")) {
+            window.location.href = 'PHP/borrarPublicacion.php?id_publicacion=' + id;
+        }
+    }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
