@@ -38,11 +38,21 @@ session_start();
                 <?php if (isset($_SESSION["id_usuario"])): ?>
                     <div class="mb-4">
                         <form action="PHP/nuevaPublicacion.php" method="POST" enctype="multipart/form-data">
+                            <h1>BIENVENIDO</h1>
+                            <h4>Comienza a publicar!</h4>
                             <div class="mb-3">
                                 <input type="text" name="titulo" class="form-control" placeholder="Título de la publicación" required>
                             </div>
                             <div class="mb-3">
                                 <textarea name="contenido" class="form-control" rows="3" placeholder="Contenido de la publicación" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="FELIZOMETRO" class="form-label">Felizómetro</label>
+                                <input type="number" name="FELIZOMETRO" id="FELIZOMETRO" class="form-control" placeholder="Felizómetro" required min="0" max="100">
+                            </div>
+                            <div class="mb-3">
+                                <label for="SUERTE" class="form-label">Número de la Suerte</label>
+                                <input type="text" name="SUERTE" id="SUERTE" class="form-control" placeholder="Número de la suerte" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
                             </div>
                             <div class="mb-3">
                                 <input type="file" name="imagen" class="form-control" accept="image/*">
@@ -55,7 +65,7 @@ session_start();
                 <?php endif; ?>
 
                 <?php
-                $sql = "SELECT p.id_publicacion, p.titulo, p.contenido, p.fecha_creacion, p.fecha_actualizacion, p.imagen, p.id_usuario, u.nombre_usuario 
+                $sql = "SELECT p.id_publicacion, p.titulo, p.contenido, p.fecha_creacion, p.fecha_actualizacion, p.imagen, p.id_usuario, u.nombre_usuario, p.FELIZOMETRO, p.SUERTE 
                         FROM Publicaciones p 
                         JOIN Usuarios u ON p.id_usuario = u.id_usuario 
                         ORDER BY p.fecha_creacion DESC";
@@ -66,10 +76,14 @@ session_start();
                         echo '<div class="card mb-3">';
                         echo '<div class="card-body">';
                         echo '<h5 class="card-title">' . htmlspecialchars($row["titulo"]) . '</h5>';
+                        echo '<p class="card-text">' . htmlspecialchars($row["contenido"]) . '</p>';
+                        echo '<p class="card-text"><strong>Felizometro:</strong> ' . htmlspecialchars($row["FELIZOMETRO"]) . '</p>';
+                        echo '<p class="card-text"><strong>Numero de la suerte:</strong> ' . htmlspecialchars($row["SUERTE"]) . '</p>';
+                        
                         if ($row["imagen"]) {
                             echo '<img src="uploads/' . htmlspecialchars($row["imagen"]) . '" class="img-fluid mb-2" alt="Imagen de la publicación">';
                         }
-                        echo '<p class="card-text">' . htmlspecialchars($row["contenido"]) . '</p>';
+                        echo '<br>';
                         echo '<small>Publicado por <strong>' . htmlspecialchars($row["nombre_usuario"]) . '</strong> en ' . $row["fecha_creacion"];
                         if ($row["fecha_creacion"] != $row["fecha_actualizacion"]) {
                             echo ' (editado el ' . $row["fecha_actualizacion"] . ')';

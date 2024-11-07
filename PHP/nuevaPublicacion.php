@@ -2,32 +2,30 @@
 include 'config.php';
 session_start();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['id_usuario'])) {
-    $titulo = $_POST['titulo'];
-    $contenido = $_POST['contenido'];
-    $id_usuario = $_SESSION['id_usuario'];
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_SESSION["id_usuario"])) {
+    $titulo = $_POST["titulo"];
+    $contenido = $_POST["contenido"];
+    $valor1 = intval($_POST["FELIZOMETRO"]);
+    $valor2 = intval($_POST["SUERTE"]);
+    $id_usuario = $_SESSION["id_usuario"];
+    $imagen = '';
 
-    // Procesar la imagen si se envió
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
-        $nombreImagen = uniqid() . "_" . basename($_FILES["imagen"]["name"]);
-        $ruta_imagen = "../uploads/" . $nombreImagen;
-
-        if (!move_uploaded_file($_FILES["imagen"]["tmp_name"], $ruta_imagen)) {
-            echo "Error al subir la imagen. Por favor, revisa la ruta y los permisos.";
-            exit();
-        }
-    } else {
-        $ruta_imagen = null;
+    // Manejo de la imagen si se sube
+    if (isset($_FILES["imagen"]) && $_FILES["imagen"]["error"] === 0) {
+        $nombreImagen = time() . '_' . $_FILES["imagen"]["name"];
+        move_uploaded_file($_FILES["imagen"]["tmp_name"], "../uploads/" . $nombreImagen);
+        $imagen = $nombreImagen;
     }
 
-    // Insertar la publicación en la base de datos
-    $stmt = $conn->prepare("INSERT INTO Publicaciones (titulo, contenido, id_usuario, imagen) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssis", $titulo, $contenido, $id_usuario, $ruta_imagen);
+    $sql = "INSERT INTO Publicaciones (id_usuario, titulo, contenido, imagen, FELIZOMETRO, SUERTE) 
+            VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("isssii", $id_usuario, $titulo, $contenido, $imagen, $valor1, $valor2);
     $stmt->execute();
+    $stmt->close();
+    $conn->close();
 
-    // Redirige a la página principal
     header("Location: ../foro.php");
     exit();
 }
 ?>
-
