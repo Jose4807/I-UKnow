@@ -10,9 +10,11 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foro - Página Principal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="CSS/style.css" rel="stylesheet">
+
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <nav class="navbar navbar-expand-lg navbar-ligth bg-dark mb-4">
         <div class="container">
             <a class="navbar-brand" href="foro.php">I-UKNOW</a>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -47,11 +49,11 @@ session_start();
                                 <textarea name="contenido" class="form-control" rows="3" placeholder="Contenido de la publicación" required></textarea>
                             </div>
                             <div class="mb-3">
-                                <label for="FELIZOMETRO" class="form-label">Felizómetro</label>
+                                <label for="FELIZOMETRO" class="form-label"></label>
                                 <input type="number" name="FELIZOMETRO" id="FELIZOMETRO" class="form-control" placeholder="Felizómetro" required min="0" max="100">
                             </div>
                             <div class="mb-3">
-                                <label for="SUERTE" class="form-label">Número de la Suerte</label>
+                                <label for="SUERTE" class="form-label"></label>
                                 <input type="text" name="SUERTE" id="SUERTE" class="form-control" placeholder="Número de la suerte" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
                             </div>
                             <div class="mb-3">
