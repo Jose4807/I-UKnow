@@ -1,6 +1,12 @@
 body {
     background-color: #c8d0d6;
 }
+.Fondobody {
+    background-image: url('https://th.bing.com/th/id/R.1da5894d7df8d9f2357083bea769e047?rik=Qd0OFEI21IPlHA&riu=http%3a%2f%2fwww.pixelstalk.net%2fwp-content%2fuploads%2f2016%2f04%2fGrey-backgrounds-wallpapers-HD.png&ehk=DKv3Sf3USm1nzHu64mOv0IQzq5stk%2buvWjnjjJq059s%3d&risl=1&pid=ImgRaw&r=0'); 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+}
 .navbar-brand {
     color: #ffffff;
     font-weight: bold;
