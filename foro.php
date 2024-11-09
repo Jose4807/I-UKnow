@@ -57,7 +57,7 @@ session_start();
                                 <input type="text" name="SUERTE" id="SUERTE" class="form-control" placeholder="Número de la suerte" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
                             </div>
                             <div class="mb-3">
-                                <input type="file" name="imagen" class="form-control" accept="image/*">
+                                <input type="file" name="imagen" class="form-control" accept="image/*"> 
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Crear publicación</button>
                         </form>

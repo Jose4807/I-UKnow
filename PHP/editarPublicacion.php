@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION["id_usuario"])) {
     $stmt->execute();
     $stmt->bind_result($id_usuario_publicacion);
     $stmt->fetch();
-    $stmt->close();
+    $stmt->close();   
 
     if ($id_usuario_publicacion == $_SESSION["id_usuario"]) {
         // Actualiza la publicación

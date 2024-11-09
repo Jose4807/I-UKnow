@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST["password"];
 
     // Consulta para verificar el email en la base de datos
-    $sql = "SELECT id_usuario, password FROM usuarios WHERE email = ?"; // Asegúrate que el nombre de la tabla y columnas son correctos
+    $sql = "SELECT id_usuario, password FROM Usuarios WHERE email = ?"; // Asegúrate que el nombre de la tabla y columnas son correctos
     $stmt = $conn->prepare($sql);
     
     if (!$stmt) {
@@ -31,15 +31,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["email"] = $email;
             echo "BIENVENID@!!!";
             // Espera un segundo antes de redirigir
-            echo '<meta http-equiv="refresh" content="1;url=/I-UKnow/foro.php">';
+            echo '<meta http-equiv="refresh" content="1;http://i-uknow.online/foro.php">';
             exit();
         } else {
             // Contraseña incorrecta
-            echo "Contraseña incorrecta. <a href='/I-UKnow/login.html'>Inténtalo de nuevo</a> o <a href='/I-UKnow/registro.html'>Regístrate</a>.";
+            echo "Contraseña incorrecta. <a href='http://i-uknow.online/login.html'>Inténtalo de nuevo</a> o <a href='http://i-uknow.online/registro.html'>Regístrate</a>.";
         }
     } else {
         // Usuario no encontrado
-        echo "Usuario no encontrado. <a href='/I-UKnow/login.html'>Inténtalo de nuevo</a> o <a href='/I-UKnow/registro.html'>Regístrate</a>.";
+        echo "Usuario no encontrado. <a href='http://i-uknow.online/login.html'>Inténtalo de nuevo</a> o <a href='http://i-uknow.online/registro.html'>Regístrate</a>.";
     }
 
     // Cerrar la consulta
